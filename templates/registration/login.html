@@ -1,18 +1,18 @@
 {% extends 'home.html' %}
 
 {% load crispy_forms_tags %}
-
+{% block title %}Connecter{% endblock title %}
 {% block content %}
   <div class="row justify-content-center" style="margin-top: 100px">
     <div class="col-6">
       <div class="card">
         <div class="card-body">
-          <h2>Log in</h2>
+          <h2>Connecter</h2>
           <form method="post" novalidate>
             {% csrf_token %}
             {{ form|crispy }}
-            <button type="submit" class="btn btn-primary">Log in</button>
-            <a href="{% url 'password_reset' %}" class="btn btn-link">Forgot your password?</a>
+            <button type="submit" class="btn btn-primary">Valider</button>
+            <a href="{% url 'password_reset' %}" class="btn btn-link">Mot de passe oublié?</a>
           </form>
         </div>
       </div>

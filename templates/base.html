@@ -16,7 +16,10 @@
       {% block title %}{% endblock title %} | GAMBLE
     </title>
   </head>
-  <body>
+  <style>
+    body { background: url("../static/background.png")  scroll 0 0 #FFFFFF;}
+  </style>
+  <body >
     <header>
       {% block header %}
         <nav class="app-navbar navbar navbar-expand-lg navbar-expand-md navbar-expand-sm fixed-top navbar-light bg-light" role="navigation">
@@ -40,8 +43,8 @@
               </li>
             {% else %}
               <li class="nav-item">
-                <a href="/signup/"><button type="submit" class="btn btn-primary">Sign Up </button></a>
-                <a href="/accounts/login/"><button type="button" class="btn btn-primary">Login</button></a>
+                <a href="/signup/"><button type="submit" class="btn btn-primary">S'incrire </button></a>
+                <a href="/accounts/login/"><button type="button" class="btn btn-primary">Connecter</button></a>
               </li>
             {% endif %}
 
