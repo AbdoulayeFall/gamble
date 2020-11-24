@@ -1,0 +1,18 @@
+{%extends 'base.html'%}
+
+{% load crispy_forms_tags %}
+{% block title %}Profile{% endblock title %}
+{% block content%}
+<div style="margin-top: 100px">
+  <form action="/user/{{id}}" method="GET" autocomplete="off">
+      {% csrf_token %}
+      {{ form.as_p }}
+  </form>
+
+  <form action="/user/{{id}}" method="post" novalidate>
+    {% csrf_token %}
+    {{form_pari.as_p}}
+    <button type="submit" class="btn btn-primary">Valider</button>
+  </form>
+</div>
+{%endblock%}
