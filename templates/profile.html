@@ -1,0 +1,84 @@
+{%extends 'base.html'%}
+
+{% load crispy_forms_tags %}
+{% block title %}Profile{% endblock title %}
+{% block content%}
+<div class="justify-content-center card card-body" style="margin-top: 100px">
+  <form action="/user/{{id}}" method="GET" autocomplete="off">
+      {% csrf_token %}
+      {{ form.as_p }}
+  </form>
+
+  <form action="/user/{{id}}" method="post" novalidate >
+    <div class="form-row" style ="grid-column: 5px ">
+      {% csrf_token %}
+      {{form_pari.as_p}}
+      <button type="submit" class="btn btn-primary">Créer Pari</button>
+    </div>
+  </form>
+</div>
+
+<div class="justify-content-center card">
+  {% if len_paris != 0 %}
+  <h1> Mes listes de paris</h1>
+
+  <table class="table table-responsive table-bordered table-hover table-sm table-striped" style="border:white;">
+    <thead class="thead-light">
+      <th>Nom</th>
+      <th>Jour</th>
+      <th>Type</th>
+      <th> Email </th>
+      <th>Invitation</th>
+    </thead>
+    <tbody>
+      {%for pari in paris%}
+        {% for p in pari %}
+          <tr>
+            <td>{{p.name}}</td>
+            <td>{{p.jour}}</td>
+            <td>{{p.pari_type}}</td>
+            <td>
+              <form  method="post" id="{{p.id}}" action="/user/{{p.pari_type}}/{{id}}/{{p.id}}" >
+                <input type="email" class="form-control" name="email" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email">
+              </form>
+            </td>
+            <td><button type="submit" class="btn btn-primary" form="{{p.id}}">Inviter</button></td>
+          </tr>
+        {% endfor %}
+      {% endfor %}
+
+    </tbody>
+  </table>
+  {%endif%}
+
+  {% if len_invite_paris != 0 %}
+  <h1> Mes listes d'invitations paris</h1>
+  <table class="table table-responsive table-bordered table-hover table-sm table-striped" style="border:white;">
+    <thead class="thead-light">
+      <th>Nom</th>
+      <th>Type</th>
+      <th> Acccepter </th>
+      <th>Refuser</th>
+    </thead>
+    <tbody>
+      {%for invite in invites%}
+        {% for i in invite %}
+          <tr>
+            <td>{{i.name}}</td>
+            <td>{{i.pari_type}}</td>
+            <td><button type="button" class="btn btn-primary"
+              onclick="location.href='/user/accepter/{{i.pari_type}}/{{i.id}}'">
+              Accepter</button>
+            </td>
+            <td><button type="button" class="btn btn-danger"
+                onclick="location.href='/user/refuser/{{i.pari_type}}/{{i.id}}'">
+              Refuser</button></td>
+          </tr>
+        {% endfor %}
+      {% endfor %}
+
+    </tbody>
+  </table>
+  {%endif%}
+</div>
+{%endblock%}
