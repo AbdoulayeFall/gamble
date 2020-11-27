@@ -14,10 +14,13 @@ class Pari(models.Model):
 class Match(Pari):
     equipe1 = models.CharField(max_length=100)
     equipe2 = models.CharField(max_length=100)
+    pari_type = 'MATCH'
 
 class Combat(Pari):
     joueur1 = models.CharField(max_length=100)
     joueur2 = models.CharField(max_length=100)
+    pari_type = 'COMBAT'
 
 class AutrePari(Pari):
     description = models.CharField(max_length=100)
+    pari_type = 'AUTRE'

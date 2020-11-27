@@ -26,7 +26,7 @@ class form_type_pari(forms.Form):
         required=True,
         label="Type",
         choices=TYPE_PARI,
-        widget = forms.Select(attrs = {'onchange' : 'this.form.submit();'})
+        widget = forms.Select(attrs = {'onchange' : 'this.form.submit();'}),
     )
 
 class form_autre_pari(forms.Form):

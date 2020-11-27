@@ -16,10 +16,16 @@ class User(AbstractUser):
     )
 
     email = models.EmailField(_('email address'), unique=True)
-    # paris = models.ManyToManyField( Pari, blank = True,)
-    autre_paris = models.ManyToManyField( AutrePari, blank = True,)
-    matchs = models.ManyToManyField( Match, blank = True,)
-    combats = models.ManyToManyField( Combat, blank = True,)
+
+    autre_paris = models.ManyToManyField( AutrePari, related_name='u_autre_paris',blank = True,)
+    matchs = models.ManyToManyField( Match, related_name='u_matchs', blank = True,)
+    combats = models.ManyToManyField( Combat, related_name='u_combats', blank = True,)
+    #Invitation
+    inAutres = models.ManyToManyField( AutrePari, related_name='u_inAutres', blank = True,)
+    inMatchs = models.ManyToManyField( Match, related_name='u_inMatchs', blank = True,)
+    inCombats = models.ManyToManyField( Combat, related_name='u_inCombats', blank = True,)
+
+    # invites = models.ManyToManyField( Pari, blank = True,)
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
