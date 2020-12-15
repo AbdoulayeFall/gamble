@@ -87,6 +87,7 @@ def valide(request, type):
         if form.is_valid():
             name = form.cleaned_data['name']
             description = form.cleaned_data['description']
+            mise = form.cleaned_data['mise']
             date = form.cleaned_data['date']
 
             print('AutrePari')
@@ -102,6 +103,7 @@ def valide(request, type):
             name = form.cleaned_data['name']
             equipe1 = form.cleaned_data['equipe1']
             equipe2 = form.cleaned_data['equipe2']
+            mise = form.cleaned_data['mise']
             date = form.cleaned_data['date']
 
             p = Match(jour = date, name =name, equipe1 = equipe1, equipe2 = equipe2)
@@ -114,6 +116,7 @@ def valide(request, type):
             name = form.cleaned_data['name']
             joueur1 = form.cleaned_data['joueur1']
             joueur2 = form.cleaned_data['joueur2']
+            mise = form.cleaned_data['mise']
             date = form.cleaned_data['date']
 
             p = Combat(jour = date, name =name, joueur1 = joueur1, joueur2 = joueur2)
@@ -182,6 +185,55 @@ def refuser(request, pari_type, pari_id):
         user.inAutres.remove(pari)
 
     user.save()
+
+    profile(request, user_id)
+    return redirect('/user/' + str(user_id))
+
+@csrf_exempt
+def parier(request, pari_type,  user_id, pari_id):
+    user = User.objects.get(id = user_id)
+
+    if pari_type == 'AUTRE':
+        parier = request.POST.get('select')
+        autre_paris = AutrePari.objects.get(id = pari_id)
+        userAutre = UserAutre(user = user, AutrePari = autre_paris, pari = parier)
+
+    elif pari_type == 'COMBAT':
+        parier = request.POST.get('pariCombat')
+        combat = Combat.objects.get(id = pari_id)
+        userCombat = UserCombat(user = user, combat = combat, pari = parier)
+    else:
+        parier = request.POST.get('score')
+        match = Match.objects.get(id = pari_id)
+        userMatch = UserMatch(user = user, match = match , pari = parier)
+
+    profile(request, user_id)
+    return redirect('/user/' + str(user_id))
+
+@csrf_exempt
+def resultat(request, pari_type,  user_id, pari_id):
+    # if pari_type == 'AUTRE':
+    #     userAutres = UserAutre.objects.get(id = pari_id)
+    # elif pari_type == 'COMBAT':
+    #     userCombats = UserCombat.objects.get(id = pari_id)
+    # else:
+    #     userMatchs = UserMatch.objects.get(id = pari_id)
+
+    if pari_type == 'AUTRE':
+        resultat = request.POST.get('select')
+        autrePari = AutrePari.objects.get(id = pari_id)
+        autrePari.resultat = resultat
+        autrePari.save()
+    elif pari_type == 'COMBAT':
+        resultat = request.POST.get('combat')
+        combat = Combat.objects.get(id = pari_id)
+        combat.resultat = resultat
+        combat.save()
+    else:
+        resultat = request.POST.get('score')
+        match = Match.objects.get(id = pari_id)
+        match.resultat = resultat
+        match.save()
 
     profile(request, user_id)
     return redirect('/user/' + str(user_id))

@@ -2,7 +2,6 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 
 import datetime
-# from django.forms.extras.widgets import SelectDateWidget
 
 
 from .models import User
@@ -32,6 +31,7 @@ class form_type_pari(forms.Form):
 class form_autre_pari(forms.Form):
     name = forms.CharField(label='Nom')
     description = forms.CharField(label='Description')
+    mise = forms.IntegerField(label='Mise')
     date = forms.DateField(label= "Date", widget=forms.SelectDateWidget(), required=True,)
     # date = forms.DateField(widget=SelectDateWidget)
 
@@ -39,6 +39,7 @@ class form_combat(forms.Form):
     name = forms.CharField(label='Nom')
     joueur1 = forms.CharField(label='Joueur1')
     joueur2 = forms.CharField(label='Joueur2')
+    mise = forms.IntegerField(label='Mise')
     date = forms.DateField(label= "Date", widget=forms.SelectDateWidget(), required=True,)
 
 
@@ -46,4 +47,5 @@ class form_match(forms.Form):
     name = forms.CharField(label='Nom')
     equipe1 = forms.CharField(label='Equipe1')
     equipe2 = forms.CharField(label='Equipe2')
+    mise = forms.IntegerField(label='Mise')
     date = forms.DateField(label= "Date", widget=forms.SelectDateWidget(), required=True,)

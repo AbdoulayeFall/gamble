@@ -25,7 +25,10 @@ class User(AbstractUser):
     inMatchs = models.ManyToManyField( Match, related_name='u_inMatchs', blank = True,)
     inCombats = models.ManyToManyField( Combat, related_name='u_inCombats', blank = True,)
 
-    # invites = models.ManyToManyField( Pari, blank = True,)
+    # Parier
+    # parierSurAutres = models.ManyToManyField( AutrePari, related_name='p_inAutres', blank = True,)
+    # parierSurMatchs = models.ManyToManyField( Match, related_name='p_inMatchs', blank = True,)
+    # parierSurCombats = models.ManyToManyField( Combat, related_name='p_inCombats', blank = True,)
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
@@ -34,3 +37,42 @@ class User(AbstractUser):
 
     def __str__(self):
         return self.email
+
+class UserMatch(models.Model):
+    user = models.ForeignKey(User,
+        # verbose_name=('Reviewer for semester'),
+        on_delete=models.PROTECT
+    )
+
+    match = models.ForeignKey(Match,
+        # verbose_name=_('Semester reviewer'),
+        on_delete=models.PROTECT
+    )
+
+    pari = models.CharField(max_length=10)
+
+class UserCombat(models.Model):
+    user = models.ForeignKey(User,
+        # verbose_name=('Reviewer for semester'),
+        on_delete=models.PROTECT
+    )
+
+    combat = models.ForeignKey(Combat,
+        # verbose_name=_('Semester reviewer'),
+        on_delete=models.PROTECT
+    )
+
+    pari = models.CharField(max_length=10)
+
+class UserAutre(models.Model):
+    user = models.ForeignKey(User,
+        # verbose_name=('Reviewer for semester'),
+        on_delete=models.PROTECT
+    )
+
+    autre = models.ForeignKey(AutrePari,
+        # verbose_name=_('Semester reviewer'),
+        on_delete=models.PROTECT
+    )
+
+    pari = models.CharField(max_length=10)

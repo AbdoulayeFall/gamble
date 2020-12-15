@@ -5,7 +5,8 @@ from django.db import models
 
 class Pari(models.Model):
     name = models.CharField(max_length=100)
-    resultat = models.CharField(max_length=100)
+    resultat = models.CharField(max_length=100,)
+    mise = models.IntegerField(default = 5)
     jour = models.DateField()
 
     # class Meta:
