@@ -9,4 +9,5 @@ urlpatterns = [
     path('<str:pari_type>/<slug:user_id>/<int:pari_id>',views.invite, name="invite"),
     path('parier/<str:pari_type>/<slug:user_id>/<int:pari_id>',views.parier, name="parier"),
     path('resultat/<str:pari_type>/<slug:user_id>/<int:pari_id>',views.resultat, name="resultat"),
+    path('gagnants/<str:pari_type>/<slug:user_id>/<int:pari_id>',views.gagnants, name="gagnants"),
 ]

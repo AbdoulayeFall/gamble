@@ -92,7 +92,7 @@ def valide(request, type):
 
             print('AutrePari')
 
-            p = AutrePari(jour = date, description = description, name = name)
+            p = AutrePari(jour = date, description = description, name = name, mise = mise)
             p.save()
             user.autre_paris.add(p)
             user.save()
@@ -106,7 +106,7 @@ def valide(request, type):
             mise = form.cleaned_data['mise']
             date = form.cleaned_data['date']
 
-            p = Match(jour = date, name =name, equipe1 = equipe1, equipe2 = equipe2)
+            p = Match(jour = date, name =name, equipe1 = equipe1, equipe2 = equipe2, mise = mise)
             p.save()
             user.matchs.add(p)
             user.save()
@@ -119,7 +119,7 @@ def valide(request, type):
             mise = form.cleaned_data['mise']
             date = form.cleaned_data['date']
 
-            p = Combat(jour = date, name =name, joueur1 = joueur1, joueur2 = joueur2)
+            p = Combat(jour = date, name =name, joueur1 = joueur1, joueur2 = joueur2, mise = mise)
             p.save()
             user.combats.add(p)
             user.save()
@@ -195,17 +195,38 @@ def parier(request, pari_type,  user_id, pari_id):
 
     if pari_type == 'AUTRE':
         parier = request.POST.get('select')
+        print(parier)
         autre_paris = AutrePari.objects.get(id = pari_id)
-        userAutre = UserAutre(user = user, AutrePari = autre_paris, pari = parier)
+        try:
+            userAutre = UserAutre.objects.get(user = user, autre = autre_paris)
+            userAutre.pari = parier
+        except Exception as e:
+            userAutre = UserAutre(user = user, autre = autre_paris, pari = parier)
+
+        userAutre.save()
 
     elif pari_type == 'COMBAT':
         parier = request.POST.get('pariCombat')
+        print(parier)
         combat = Combat.objects.get(id = pari_id)
-        userCombat = UserCombat(user = user, combat = combat, pari = parier)
+        try:
+            userCombat = UserCombat.objects.get(user = user, combat = combat)
+            userCombat.pari = parier
+        except Exception as e:
+            userCombat = UserCombat(user = user, combat = combat, pari = parier)
+
+        userCombat.save()
     else:
         parier = request.POST.get('score')
+        print(parier)
         match = Match.objects.get(id = pari_id)
-        userMatch = UserMatch(user = user, match = match , pari = parier)
+        try:
+            userMatch = UserMatch.objects.get(user = user, match = match)
+            userAutre.pari = parier
+        except Exception as e:
+            userMatch = UserMatch(user = user, match = match , pari = parier)
+
+        userMatch.save()
 
     profile(request, user_id)
     return redirect('/user/' + str(user_id))
@@ -237,3 +258,62 @@ def resultat(request, pari_type,  user_id, pari_id):
 
     profile(request, user_id)
     return redirect('/user/' + str(user_id))
+
+@csrf_exempt
+def gagnants(request, pari_type,  user_id, pari_id):
+    gagnants = []
+    gain = 0
+    if pari_type == 'AUTRE':
+        autrePari = AutrePari.objects.get(id = pari_id)
+        resultat =  autrePari.resultat
+        mise = autrePari.mise
+        userAutres = UserAutre.objects.filter(autre = autrePari)
+        nbre = 0
+        for userAutre in userAutres:
+            if userAutre.pari == resultat:
+                nbre += 1
+                gagnants.append(userAutre.user.username)
+
+        if nbre != 0:
+            gain = mise * len(userAutres)/nbre
+        print(gagnants)
+    elif pari_type == 'COMBAT':
+        combat = Combat.objects.get(id = pari_id)
+        resultat = combat.resultat
+        print(resultat)
+        mise = combat.mise
+        userCombats = UserCombat.objects.filter(combat = combat)
+        nbre =0
+        for userCombat in userCombats:
+            print(userCombat.pari)
+            if userCombat.pari == resultat:
+                nbre += 1
+                gagnants.append(userCombat.user.username)
+
+        if nbre != 0:
+            gain = mise * len(userCombats)/nbre
+        print(gagnants)
+    else:
+        match = Match.objects.get(id = pari_id)
+        resultat = match.resultat
+        mise = match.mise
+        userMatchs = UserMatch.objects.filter(match = match)
+        nbre = 0
+        for userMatch in userMatchs:
+            if userMatch.pari == resultat:
+                nbre += 1
+                gagnants.append(userMatch.user.username)
+
+        if nbre != 0:
+            gain = mise * len(userMatchs)/ nbre
+        print(gagnants)
+
+    count = len(gagnants)
+    context = {
+        'gagnants': gagnants,
+        'id': user_id,
+        'gain' : gain,
+        'count': count,
+    }
+
+    return render(request, 'gagnants.html', context)
